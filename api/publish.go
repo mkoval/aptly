@@ -170,9 +170,9 @@ func apiPublishRepoOrSnapshot(c *gin.Context) {
 func apiPublishUpdateSwitch(c *gin.Context) {
 	param := parseEscapedPath(c.Params.ByName("prefix"))
 	storage, prefix := deb.ParsePrefix(param)
+	distribution := c.Params.ByName("distribution")
 
 	var b struct {
-		Distribution   string
 		ForceOverwrite bool
 		Signing        SigningOptions
 	}
@@ -191,7 +191,7 @@ func apiPublishUpdateSwitch(c *gin.Context) {
 	collection.Lock()
 	defer collection.Unlock()
 
-	published, err := collection.ByStoragePrefixDistribution(storage, prefix, b.Distribution)
+	published, err := collection.ByStoragePrefixDistribution(storage, prefix, distribution)
 	if err != nil {
 		c.Fail(500, fmt.Errorf("unable to update: %s", err))
 		return
