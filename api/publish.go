@@ -172,6 +172,7 @@ func apiPublishUpdateSwitch(c *gin.Context) {
 	storage, prefix := deb.ParsePrefix(param)
 
 	var b struct {
+		Distribution   string
 		ForceOverwrite bool
 		Signing        SigningOptions
 	}
@@ -190,7 +191,7 @@ func apiPublishUpdateSwitch(c *gin.Context) {
 	collection.Lock()
 	defer collection.Unlock()
 
-	published, err = collection.ByStoragePrefixDistribution(storage, prefix, distribution)
+	published, err := collection.ByStoragePrefixDistribution(storage, prefix, b.Distribution)
 	if err != nil {
 		c.Fail(500, fmt.Errorf("unable to update: %s", err))
 		return
